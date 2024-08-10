@@ -11,6 +11,23 @@ ctx.font = '20px Arial';
 ctx.textAlign = 'center';
 ctx.textBaseline = 'middle';
 
+
+function simularKeyDown(key) {
+    // Crea un evento de teclado
+    const event = new KeyboardEvent('keydown', {
+      key: key,
+      code: `Digit${key}`,
+      keyCode: key.charCodeAt(0),
+      which: key.charCodeAt(0),
+      bubbles: true,
+      cancelable: true
+    });
+  
+    // Despacha el evento para que se procese como si se hubiera presionado una tecla
+    document.dispatchEvent(event);
+  }
+
+
 function devolverDificultadActual(){
     return dificultadGlobal;
 }
@@ -55,6 +72,7 @@ const traerNuevoBoard = async (dificultad) => {
     const data = await tablero(espaciosEnBlanco);
     board = data["Sudoku"];
     resultado = data["Respuesta"];
+    console.log("Respuesta = ", resultado)
     mostrarDificultad()
     for (var row = 0; row < 9; row++) {
         for (var col = 0; col < 9; col++) {
@@ -74,7 +92,7 @@ const jugadaValida = async (num, fila, col) => {
         }
         const data = await res.json();
        
-        return data.Valido
+        return data
     } catch (error) {
         console.error('Error al validar jugada:', error);
     }
@@ -89,16 +107,15 @@ function highlightCell(row, col) {
 
 }
 
-
-// Actualiza la matriz
-function actualizarBoard(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBoard()
+function resaltarCelda(){
     // Resaltar la celda si hay alguna seleccionada
     if (highlightedCell) {
         ctx.fillStyle = 'rgba(0, 100, 255, 0.5)';
         ctx.fillRect(highlightedCell.col * size, highlightedCell.row * size, size, size);
     }
+}
+
+function escribirNumeros(){
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
     for (var row = 0; row < 9; row++) {
         for (var col = 0; col < 9; col++) {
@@ -107,6 +124,46 @@ function actualizarBoard(){
             }
         }
     }
+}
+
+// Actualiza la matriz
+function actualizarBoard(error){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBoard()
+    
+    resaltarCelda()
+
+    //aNDA MEDIO MAL
+    if (error) {
+        let blinkCount = 0;
+        let maxBlinks = 5; // Número total de parpadeos (rojo + transparente = 1 parpadeo)
+        let interval = setInterval(() => {
+            blinkCount++;
+          
+            if (blinkCount % 2 === 0) {
+                ctx.clearRect(highlightedCell.col * size, highlightedCell.row * size, size, size);
+            } else {
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                ctx.fillRect(
+                    highlightedCell.col * size + 1, 
+                    highlightedCell.row * size + 1, 
+                    size - 4, 
+                    size - 4 
+                );
+            }
+    
+            if (blinkCount >= maxBlinks) {
+                clearInterval(interval);
+                ctx.clearRect(highlightedCell.col * size, highlightedCell.row * size, size, size);
+                drawBoard();
+                escribirNumeros();
+            }
+        }, 100); // Ajusta el tiempo entre parpadeos aquí
+    }
+
+    escribirNumeros()
+
+    
 }
 //Evento click. revisa que fila y columna se selecciona y se resalta.
 canvas.addEventListener('click', function(event) {
@@ -194,12 +251,15 @@ async function juego(){
             if ((key >= '1' && key <= '9') &&  board[row][col] =='') {
                 const num = parseInt(key);
                 const esValida = await jugadaValida(num, row, col);
-                if (esValida) {
+  
+                if (esValida["Valido"]) {
+                    resultado = esValida["Respuesta"]
                     board[row][col] = parseInt(key);
                     actualizarBoard();
+                    console.log("Respuesta = ", resultado)
     
                 }else{
-                    alert("Jugada no valida")
+                    actualizarBoard(error=true)
                 }
                 
             } else if (key === 'Backspace' || key === 'Delete') {

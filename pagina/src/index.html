@@ -3,38 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Sudoku</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="output.css" />
   </head>
-  <body class="font-serif  bg-neutral-200"> 
+  <body class="font-serif bg-neutral-200">
     <nav class="flex justify-center bg-neutral-600 w-full py-4">
       <div class="botones-dificultad text-white flex gap-4">
-        <button class="facil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200" onclick="traerNuevoBoard('Facil')">Fácil</button>
-        <button class="medio bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200" onclick="traerNuevoBoard('Medio')">Medio</button>
-        <button class="dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200" onclick="traerNuevoBoard('Dificil')">Difícil</button>
-        <button class="muy-dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200" onclick="traerNuevoBoard('Muy dificil')">Muy Difícil</button>
+        <button
+          class="facil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
+          onclick="traerNuevoBoard('Facil')"
+        >
+          Fácil
+        </button>
+        <button
+          class="medio bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
+          onclick="traerNuevoBoard('Medio')"
+        >
+          Medio
+        </button>
+        <button
+          class="dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
+          onclick="traerNuevoBoard('Dificil')"
+        >
+          Difícil
+        </button>
+        <button
+          class="muy-dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
+          onclick="traerNuevoBoard('Muy dificil')"
+        >
+          Muy Difícil
+        </button>
       </div>
     </nav>
-    
-  <div class="grid justify-items-center">
-    <div class="titulo text-6xl m-3">
-      <h1>Sudoku</h1>
+
+    <div class="grid justify-items-center">
+      <div class="titulo text-6xl m-3">
+        <h1>Sudoku</h1>
+      </div>
+      <h5 id="mostrarDificultad"></h5>
+      <div class="md:flex grid grid-cols-1 text-white  ">
+        <div class="canvas">
+          <canvas id="sudokuCanvas" width="450" height="450"></canvas>
+        </div>
+        <div class="numeros grid grid-cols-3 gap-5 m-5 mx-8 align-center text-2xl md:h-80">
+          <button onclick="simularKeyDown('1')">1</button>
+          <button onclick="simularKeyDown('2')">2</button>
+          <button onclick="simularKeyDown('3')">3</button>
+          <button onclick="simularKeyDown('4')">4</button>
+          <button onclick="simularKeyDown('5')">5</button>
+          <button onclick="simularKeyDown('6')">6</button>
+          <button onclick="simularKeyDown('7')">7</button>
+          <button onclick="simularKeyDown('8')">8</button>
+          <button onclick="simularKeyDown('9')">9</button>
+        </div>
+      </div>
     </div>
-    <h5 id="mostrarDificultad"></h5>
-    <div class="canvas">
-      <canvas id="sudokuCanvas" width="450" height="450"></canvas>
-    </div>
+
     <div class="botones flex justify-center gap-4 mt-4">
-      <button onclick="resolverSudoku()" class="bg-blue-500 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md">
+      <button
+        onclick="resolverSudoku()"
+        class="bg-neutral-800 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md"
+      >
         Resolver Sudoku
       </button>
-      <button onclick="traerNuevoBoard(devolverDificultadActual())" class="bg-blue-500 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md">
+      <button
+        onclick="traerNuevoBoard(devolverDificultadActual())"
+        class="bg-neutral-800 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md"
+      >
         Nuevo Sudoku
       </button>
     </div>
-    
-  </div>
+
     <script src="sudoku.js"></script>
   </body>
 </html>

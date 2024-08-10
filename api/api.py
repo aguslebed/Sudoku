@@ -1,7 +1,7 @@
 from typing import Union, List
 from fastapi import FastAPI, HTTPException
 import copy
-from ClaseSudoku import generar_sudoku, sacar_numeros, es_valido, verificarJugada
+from ClaseSudoku import generar_sudoku, sacar_numeros, es_valido, resolver
 
 
 app = FastAPI()
@@ -23,10 +23,23 @@ def read_root(dificultad:int):
 def ingresarNumero(num: int, fila: int, columna: int):
     global sudoku
     global sudoku_respuesta
+    sudokuAux = copy.deepcopy(sudoku)
+    valido = False
     try:
         # Verifica si la jugada es válida
-        valido = verificarJugada(num, fila, columna,sudoku_respuesta)
-        return {"Valido": valido}
+        if es_valido(sudoku,num,fila,columna):
+            sudokuAux[fila][columna] = num
+            if resolver(sudokuAux):
+                valido = True
+                sudoku[fila][columna] = num
+                sudoku_respuesta = copy.deepcopy(sudokuAux)
+            else:
+                print("La jugada es valida, pero el sudoku no tiene solucion") 
+        else:
+            print("La jugada no es valida")
+
+        return {"Valido": valido,
+                "Respuesta": sudoku_respuesta}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
