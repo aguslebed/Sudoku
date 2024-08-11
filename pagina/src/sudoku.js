@@ -130,8 +130,10 @@ function escribirNumeros(){
 function actualizarBoard(error){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBoard()
+    if (!error){
+        resaltarCelda()
+    }
     
-    resaltarCelda()
 
     //aNDA MEDIO MAL
     if (error) {
@@ -145,10 +147,10 @@ function actualizarBoard(error){
             } else {
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
                 ctx.fillRect(
-                    highlightedCell.col * size + 1, 
-                    highlightedCell.row * size + 1, 
-                    size - 4, 
-                    size - 4 
+                    highlightedCell.col * size + 0.5, 
+                    highlightedCell.row * size + 0.5, 
+                    size - 1, 
+                    size - 1 
                 );
             }
     
