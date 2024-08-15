@@ -2,7 +2,7 @@ from typing import Union, List
 from fastapi import FastAPI, HTTPException
 import copy
 from ClaseSudoku import generar_sudoku, sacar_numeros, es_valido, resolver
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -42,6 +42,23 @@ def ingresarNumero(num: int, fila: int, columna: int):
                 "Respuesta": sudoku_respuesta}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+#Para que no salga el problema de CORS
+origins = [
+    "http://localhost:5500" 
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"], 
+)
+
+
 
 if __name__ == "__main__":
     import uvicorn

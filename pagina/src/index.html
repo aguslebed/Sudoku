@@ -42,11 +42,12 @@
         <h1>Sudoku</h1>
       </div>
       <h5 id="mostrarDificultad"></h5>
-      <div class="md:flex grid grid-cols-1 text-white  ">
+
+      <div class=" grid grid-cols-3 ">
         <div class="canvas">
           <canvas id="sudokuCanvas" width="450" height="450"></canvas>
         </div>
-        <div class="numeros grid grid-cols-3 gap-5 m-5 mx-8 align-center text-2xl md:h-80">
+        <div class="numeros grid grid-cols-3 gap-5 m-5 mx-8 align-center text-2xl md:h-80 text-white">
           <button onclick="simularKeyDown('1')">1</button>
           <button onclick="simularKeyDown('2')">2</button>
           <button onclick="simularKeyDown('3')">3</button>
@@ -58,6 +59,8 @@
           <button onclick="simularKeyDown('9')">9</button>
         </div>
       </div>
+
+
     </div>
 
     <div class="botones flex justify-center gap-4 mt-4">
