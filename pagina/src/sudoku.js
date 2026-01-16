@@ -15,35 +15,35 @@ ctx.textBaseline = 'middle';
 function simularKeyDown(key) {
     // Crea un evento de teclado
     const event = new KeyboardEvent('keydown', {
-      key: key,
-      code: `Digit${key}`,
-      keyCode: key.charCodeAt(0),
-      which: key.charCodeAt(0),
-      bubbles: true,
-      cancelable: true
+        key: key,
+        code: `Digit${key}`,
+        keyCode: key.charCodeAt(0),
+        which: key.charCodeAt(0),
+        bubbles: true,
+        cancelable: true
     });
-  
+
     // Despacha el evento para que se procese como si se hubiera presionado una tecla
     document.dispatchEvent(event);
-  }
+}
 
 
-function devolverDificultadActual(){
+function devolverDificultadActual() {
     return dificultadGlobal;
 }
 
-function mostrarDificultad(){
+function mostrarDificultad() {
     document.getElementById("mostrarDificultad").innerText = "Dificultad elgida: " + dificultadGlobal;
 }
 function generarNumeroAleatorio(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     mostrarDificultad();
 });
 
 const tablero = async (dificultad) => {
-    
+
     const res = await fetch(`http://127.0.0.1:8000/?dificultad=${dificultad}`);
     const data = await res.json();
 
@@ -51,7 +51,7 @@ const tablero = async (dificultad) => {
 };
 // Este pide el sudoku nuevo
 const traerNuevoBoard = async (dificultad) => {
-    switch(dificultad) {
+    switch (dificultad) {
         case "Facil":
             espaciosEnBlanco = generarNumeroAleatorio(32, 40);
             break;
@@ -76,12 +76,12 @@ const traerNuevoBoard = async (dificultad) => {
     mostrarDificultad()
     for (var row = 0; row < 9; row++) {
         for (var col = 0; col < 9; col++) {
-            if (board[row][col] != 0){
-                ctx.fillText(board[row][col], col * size + size / 2, row * size + size / 2);  
-            }   
+            if (board[row][col] != 0) {
+                ctx.fillText(board[row][col], col * size + size / 2, row * size + size / 2);
+            }
         }
     }
-   actualizarBoard()
+    actualizarBoard()
 };
 
 const jugadaValida = async (num, fila, col) => {
@@ -91,7 +91,7 @@ const jugadaValida = async (num, fila, col) => {
             throw new Error(`Error: ${res.statusText}`);
         }
         const data = await res.json();
-       
+
         return data
     } catch (error) {
         console.error('Error al validar jugada:', error);
@@ -107,7 +107,7 @@ function highlightCell(row, col) {
 
 }
 
-function resaltarCelda(){
+function resaltarCelda() {
     // Resaltar la celda si hay alguna seleccionada
     if (highlightedCell) {
         ctx.fillStyle = 'rgba(0, 100, 255, 0.5)';
@@ -115,7 +115,7 @@ function resaltarCelda(){
     }
 }
 
-function escribirNumeros(){
+function escribirNumeros() {
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
     for (var row = 0; row < 9; row++) {
         for (var col = 0; col < 9; col++) {
@@ -127,13 +127,13 @@ function escribirNumeros(){
 }
 
 // Actualiza la matriz
-function actualizarBoard(error){
+function actualizarBoard(error) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBoard()
-    if (!error){
+    if (!error) {
         resaltarCelda()
     }
-    
+
 
     //aNDA MEDIO MAL
     if (error) {
@@ -141,34 +141,41 @@ function actualizarBoard(error){
         let maxBlinks = 5; // Número total de parpadeos (rojo + transparente = 1 parpadeo)
         let interval = setInterval(() => {
             blinkCount++;
-          
-            if (blinkCount % 2 === 0) {
-                ctx.clearRect(highlightedCell.col * size, highlightedCell.row * size, size, size);
-            } else {
+
+            // 1. Limpiar todo el tablero para este frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Dibujar fondo rojo si corresponde (fase impar)
+            if (blinkCount % 2 !== 0) {
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
                 ctx.fillRect(
-                    highlightedCell.col * size + 0.5, 
-                    highlightedCell.row * size + 0.5, 
-                    size - 1, 
-                    size - 1 
+                    highlightedCell.col * size,
+                    highlightedCell.row * size,
+                    size,
+                    size
                 );
             }
-    
+
+            // 3. Dibujar las líneas de la cuadrícula (SIN limpiar de nuevo, usando false)
+            drawBoard(false);
+
+            // 4. Dibujar los números encima
+            escribirNumeros();
+
             if (blinkCount >= maxBlinks) {
                 clearInterval(interval);
-                ctx.clearRect(highlightedCell.col * size, highlightedCell.row * size, size, size);
-                drawBoard();
-                escribirNumeros();
+                // Restaurar estado normal
+                actualizarBoard();
             }
         }, 100); // Ajusta el tiempo entre parpadeos aquí
     }
 
     escribirNumeros()
 
-    
+
 }
 //Evento click. revisa que fila y columna se selecciona y se resalta.
-canvas.addEventListener('click', function(event) {
+canvas.addEventListener('click', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -183,8 +190,10 @@ canvas.addEventListener('click', function(event) {
 
 
 
-function drawBoard() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawBoard(clear = true) {
+    if (clear) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
 
     // Dibujar las líneas de la cuadrícula
     for (var i = 0; i <= 9; i++) {
@@ -199,15 +208,15 @@ function drawBoard() {
     }
 }
 
-function matrizVacia(){
-    for(let i = 0; i < board.length; i++){
-        for(let j = 0; j<board.length; j++){
-            if (board[i][j] != 0){
+function matrizVacia() {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board.length; j++) {
+            if (board[i][j] != 0) {
                 return false;
             }
         }
     }
-    
+
     return true;
 }
 
@@ -223,7 +232,7 @@ function contieneCero() {
     return encontrado;
 }
 
-function resolverSudoku(){
+function resolverSudoku() {
     board = resultado
     actualizarBoard()
 }
@@ -233,37 +242,37 @@ function esperarUnCachito() {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve();
-        }, 250); 
+        }, 250);
     });
 }
-  
-async function juego(){
 
-    if (matrizVacia()){
+async function juego() {
+
+    if (matrizVacia()) {
         await traerNuevoBoard(dificultadGlobal)
-    
+
     }
-    
+
     actualizarBoard()
-    document.addEventListener('keydown', async function(event) {
+    document.addEventListener('keydown', async function (event) {
         if (highlightedCell) {
             const row = highlightedCell.row;
             const col = highlightedCell.col;
             const key = event.key;
-            if ((key >= '1' && key <= '9') &&  board[row][col] =='') {
+            if ((key >= '1' && key <= '9') && board[row][col] == '') {
                 const num = parseInt(key);
                 const esValida = await jugadaValida(num, row, col);
-  
+
                 if (esValida["Valido"]) {
                     resultado = esValida["Respuesta"]
                     board[row][col] = parseInt(key);
                     actualizarBoard();
                     console.log("Respuesta = ", resultado)
-    
-                }else{
-                    actualizarBoard(error=true)
+
+                } else {
+                    actualizarBoard(error = true)
                 }
-                
+
             } else if (key === 'Backspace' || key === 'Delete') {
                 board[row][col] = 0;
                 actualizarBoard();
@@ -271,11 +280,11 @@ async function juego(){
         }
     });
 
-    
-    
+
+
     actualizarBoard()
 
-   
+
     //await esperarUnCachito()
     //window.requestAnimationFrame(juego)
 }

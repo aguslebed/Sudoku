@@ -47,7 +47,7 @@ def ingresarNumero(num: int, fila: int, columna: int):
 
 #Para que no salga el problema de CORS
 origins = [
-    "http://localhost:5500" 
+    "*" 
 ]
 
 app.add_middleware(

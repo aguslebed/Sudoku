@@ -1,83 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sudoku</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="output.css" />
-  </head>
-  <body class="font-serif bg-neutral-200">
-    <nav class="flex justify-center bg-neutral-600 w-full py-4">
-      <div class="botones-dificultad text-white flex gap-4">
-        <button
-          class="facil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
-          onclick="traerNuevoBoard('Facil')"
-        >
-          Fácil
-        </button>
-        <button
-          class="medio bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
-          onclick="traerNuevoBoard('Medio')"
-        >
-          Medio
-        </button>
-        <button
-          class="dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
-          onclick="traerNuevoBoard('Dificil')"
-        >
-          Difícil
-        </button>
-        <button
-          class="muy-dificil bg-neutral-800 p-3 px-6 rounded-md shadow-md hover:bg-neutral-700 hover:border hover:border-neutral-500 transition-all duration-200"
-          onclick="traerNuevoBoard('Muy dificil')"
-        >
-          Muy Difícil
-        </button>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="output.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+
+<body
+  class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex flex-col items-center py-8 text-neutral-800 selection:bg-indigo-200">
+
+  <!-- Navbar / Difficulty -->
+  <nav class="w-full max-w-4xl px-4 mb-8">
+    <div
+      class="botones-dificultad bg-white/50 backdrop-blur-sm p-2 rounded-2xl shadow-sm flex flex-wrap justify-center gap-2">
+      <button
+        class="facil px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-green-100 hover:text-green-700 text-neutral-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
+        onclick="traerNuevoBoard('Facil')">Fácil</button>
+      <button
+        class="medio px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-yellow-100 hover:text-yellow-700 text-neutral-600 focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+        onclick="traerNuevoBoard('Medio')">Medio</button>
+      <button
+        class="dificil px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-orange-100 hover:text-orange-700 text-neutral-600 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+        onclick="traerNuevoBoard('Dificil')">Difícil</button>
+      <button
+        class="muy-dificil px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-red-100 hover:text-red-700 text-neutral-600 focus:ring-2 focus:ring-red-400 focus:outline-none"
+        onclick="traerNuevoBoard('Muy dificil')">Muy Difícil</button>
+    </div>
+  </nav>
+
+  <!-- Main Title -->
+  <div class="titulo mb-6 text-center">
+    <h1 class="text-5xl font-bold text-indigo-900 tracking-tight">Sudoku</h1>
+    <h5 id="mostrarDificultad" class="mt-2 text-indigo-600 font-medium h-6"></h5>
+  </div>
+
+  <!-- Game Area Card -->
+  <div
+    class="bg-white rounded-3xl shadow-xl p-6 md:p-10 flex flex-col lg:flex-row items-center justify-center gap-10 max-w-5xl w-full mx-4">
+
+    <!-- Canvas Container -->
+    <div class="canvas w-full flex justify-center lg:justify-end">
+      <div class="relative group">
+        <canvas id="sudokuCanvas" width="450" height="450"
+          class="max-w-full h-auto rounded-lg shadow-inner border-2 border-slate-100 bg-white"></canvas>
       </div>
-    </nav>
-
-    <div class="grid justify-items-center">
-      <div class="titulo text-6xl m-3">
-        <h1>Sudoku</h1>
-      </div>
-      <h5 id="mostrarDificultad"></h5>
-
-      <div class=" grid grid-cols-3 ">
-        <div class="canvas">
-          <canvas id="sudokuCanvas" width="450" height="450"></canvas>
-        </div>
-        <div class="numeros grid grid-cols-3 gap-5 m-5 mx-8 align-center text-2xl md:h-80 text-white">
-          <button onclick="simularKeyDown('1')">1</button>
-          <button onclick="simularKeyDown('2')">2</button>
-          <button onclick="simularKeyDown('3')">3</button>
-          <button onclick="simularKeyDown('4')">4</button>
-          <button onclick="simularKeyDown('5')">5</button>
-          <button onclick="simularKeyDown('6')">6</button>
-          <button onclick="simularKeyDown('7')">7</button>
-          <button onclick="simularKeyDown('8')">8</button>
-          <button onclick="simularKeyDown('9')">9</button>
-        </div>
-      </div>
-
-
     </div>
 
-    <div class="botones flex justify-center gap-4 mt-4">
-      <button
-        onclick="resolverSudoku()"
-        class="bg-neutral-800 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md"
-      >
-        Resolver Sudoku
-      </button>
-      <button
-        onclick="traerNuevoBoard(devolverDificultadActual())"
-        class="bg-neutral-800 text-white rounded-md p-3 px-6 shadow-md hover:bg-blue-600 hover:border hover:border-blue-400 transition-all duration-200 text-md"
-      >
-        Nuevo Sudoku
-      </button>
+    <!-- Numbers Pad -->
+    <div class="numeros grid grid-cols-3 gap-3 w-fit shrink-0">
+      <button onclick="simularKeyDown('1')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">1</button>
+      <button onclick="simularKeyDown('2')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">2</button>
+      <button onclick="simularKeyDown('3')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">3</button>
+      <button onclick="simularKeyDown('4')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">4</button>
+      <button onclick="simularKeyDown('5')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">5</button>
+      <button onclick="simularKeyDown('6')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">6</button>
+      <button onclick="simularKeyDown('7')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">7</button>
+      <button onclick="simularKeyDown('8')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">8</button>
+      <button onclick="simularKeyDown('9')"
+        class="w-16 h-16 rounded-2xl bg-slate-50 text-slate-700 font-semibold text-xl shadow-sm hover:bg-indigo-600 hover:text-white hover:shadow-md transition-all active:scale-95 flex items-center justify-center">9</button>
     </div>
+  </div>
 
-    <script src="sudoku.js"></script>
-  </body>
+  <!-- Bottom Actions -->
+  <div class="botones mt-8 flex flex-wrap justify-center gap-4">
+    <button onclick="resolverSudoku()"
+      class="bg-indigo-600 text-white px-8 py-3 rounded-full shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-0.5 transition-all font-semibold tracking-wide">
+      Resolver Sudoku
+    </button>
+    <button onclick="traerNuevoBoard(devolverDificultadActual())"
+      class="bg-white text-indigo-600 border border-indigo-200 px-8 py-3 rounded-full shadow-sm hover:bg-indigo-50 hover:border-indigo-300 transition-all font-semibold tracking-wide">
+      Nuevo Juego
+    </button>
+  </div>
+
+  <script src="sudoku.js"></script>
+</body>
+
 </html>
